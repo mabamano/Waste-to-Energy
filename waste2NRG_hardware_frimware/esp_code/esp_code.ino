@@ -3,14 +3,14 @@
 #include "DHT.h"
 
 // ================= WIFI =================
-const char* ssid = "YOUR_WIFI_NAME";
-const char* password = "YOUR_WIFI_PASSWORD";
+const char* ssid = "JASON EZRA";
+const char* password = "01234567";
 
 // ================= FIREBASE =================
 String firebaseURL = "https://espwebdash-da9ac-default-rtdb.asia-southeast1.firebasedatabase.app/latest_sensor.json";
 
 // ================= PINS =================
-#define DHTPIN 4
+#define DHTPIN 23
 #define DHTTYPE DHT11
 
 #define MQ4_PIN 34   // Analog pin for methane sensor
