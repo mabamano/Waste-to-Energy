@@ -7,7 +7,7 @@ const char* ssid = "YOUR_WIFI_NAME";
 const char* password = "YOUR_WIFI_PASSWORD";
 
 // ================= FIREBASE =================
-String firebaseURL = "https://espwebdash-da9ac-default-rtdb.asia-southeast1.firebasedatabase.app/sensorData.json";
+String firebaseURL = "https://espwebdash-da9ac-default-rtdb.asia-southeast1.firebasedatabase.app/latest_sensor.json";
 
 // ================= PINS =================
 #define DHTPIN 4
@@ -60,9 +60,10 @@ void loop() {
 
     // -------- JSON --------
     String jsonData = "{";
-    jsonData += "\"temperature\":" + String(temperature) + ",";
-    jsonData += "\"humidity\":" + String(humidity) + ",";
-    jsonData += "\"methane\":" + String(methaneRaw);
+    jsonData += "\"temperature_c\":" + String(temperature) + ",";
+    jsonData += "\"humidity_pct\":" + String(humidity) + ",";
+    jsonData += "\"methane_ppm\":" + String(methaneRaw) + ",";
+    jsonData += "\"moisture_pct\":0";
     jsonData += "}";
 
     // -------- SEND --------

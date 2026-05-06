@@ -2,7 +2,7 @@ import requests
 import time
 
 # 🔗 Your Firebase URL (READ endpoint)
-FIREBASE_URL = "https://espwebdash-da9ac-default-rtdb.asia-southeast1.firebasedatabase.app/sensorData.json"
+FIREBASE_URL = "https://espwebdash-da9ac-default-rtdb.asia-southeast1.firebasedatabase.app/latest_sensor.json"
 
 
 def fetch_data():
@@ -29,11 +29,11 @@ while True:
         print("-" * 30)
 
         # If using PUT (single object)
-        if isinstance(data, dict) and "temperature" in data:
-            print(f"🌡 Temperature : {data.get('temperature')} °C")
-            print(f"💧 Humidity    : {data.get('humidity')} %")
-            print(f"🧪 Methane     : {data.get('methane')} ppm")
-            print(f"🌱 Moisture    : {data.get('moisture')} %")
+        if isinstance(data, dict) and "temperature_c" in data:
+            print(f"🌡 Temperature : {data.get('temperature_c')} °C")
+            print(f"💧 Humidity    : {data.get('humidity_pct')} %")
+            print(f"🧪 Methane     : {data.get('methane_ppm')} ppm")
+            print(f"🌱 Moisture    : {data.get('moisture_pct')} %")
             print(f"⏱ Timestamp   : {data.get('timestamp')}")
 
         # If using POST (multiple entries)
@@ -41,10 +41,10 @@ while True:
             print("Latest Entries:")
             for key, value in list(data.items())[-5:]:
                 print(f"\n🔹 Entry ID: {key}")
-                print(f"   Temp : {value.get('temperature')}")
-                print(f"   Hum  : {value.get('humidity')}")
-                print(f"   Gas  : {value.get('methane')}")
-                print(f"   Soil : {value.get('moisture')}")
+                print(f"   Temp : {value.get('temperature_c')}")
+                print(f"   Hum  : {value.get('humidity_pct')}")
+                print(f"   Gas  : {value.get('methane_ppm')}")
+                print(f"   Soil : {value.get('moisture_pct')}")
                 print(f"   Time : {value.get('timestamp')}")
 
     else:
