@@ -1,5 +1,8 @@
-requests
-ultralytics
-opencv-python
-flask
-flask-cors
+# Requirements for Waste-to-Energy System
+# Requires Python >= 3.9 (Tested on 3.13)
+
+requests>=2.28.0
+ultralytics>=8.0.0
+opencv-python>=4.5.0
+flask>=2.0.0
+flask-cors>=3.0.0

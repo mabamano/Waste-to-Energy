@@ -3,8 +3,8 @@ import random
 import time
 from datetime import datetime
 
-# 🔗 Your Firebase URL (IMPORTANT: include .json)
-BASE_URL = "https://espwebdash-da9ac-default-rtdb.asia-southeast1.firebasedatabase.app"
+# 🔗 Local JSON DB URL
+BASE_URL = "http://localhost:5000/db"
 
 def generate_sensor_data():
     return {
@@ -34,6 +34,7 @@ while True:
         daily_summary = generate_daily_summary()
 
         requests.put(f"{BASE_URL}/latest_sensor.json", json=sensor_data)
+        requests.post(f"{BASE_URL}/historical_sensor.json", json=sensor_data)
         requests.put(f"{BASE_URL}/energy_metrics.json", json=energy_metrics)
         requests.put(f"{BASE_URL}/daily_summary.json", json=daily_summary)
 
