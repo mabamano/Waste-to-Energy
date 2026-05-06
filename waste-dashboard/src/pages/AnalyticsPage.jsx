@@ -4,7 +4,7 @@ import CarbonCreditEstimator from '../components/CarbonCreditEstimator';
 import ExportButton from '../components/ExportButton';
 import { useTranslation } from '../contexts/LanguageContext';
 
-export default function AnalyticsPage({ historicalSensor, dailySummary, energyMetrics }) {
+export default function AnalyticsPage({ historicalSensor, dailySummary, energyMetrics, energyHistory, summaryHistory }) {
   const { t } = useTranslation();
 
   return (
@@ -19,7 +19,7 @@ export default function AnalyticsPage({ historicalSensor, dailySummary, energyMe
           <HistoricalCharts history={historicalSensor} />
         </div>
         <div className="analytics-sidebar">
-          <CarbonCreditEstimator co2OffsetKg={energyMetrics?.co2_offset_kg ?? null} />
+          <CarbonCreditEstimator co2OffsetKg={energyMetrics?.co2_offset_kg ?? null} energyHistory={energyHistory} />
           <ExportButton historicalSensor={historicalSensor} />
         </div>
       </div>

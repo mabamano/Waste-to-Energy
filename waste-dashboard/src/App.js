@@ -23,6 +23,8 @@ export default function App() {
   const [latestClassification, setLatestClassification] = useState(null);
   const [energyMetrics, setEnergyMetrics] = useState(null);
   const [dailySummary, setDailySummary] = useState(null);
+  const [energyHistory, setEnergyHistory] = useState([]);
+  const [summaryHistory, setSummaryHistory] = useState([]);
   const [alerts, setAlerts] = useState([]);
   const [historicalSensor, setHistoricalSensor] = useState([]);
   const [lastUpdated, setLastUpdated] = useState(null);
@@ -59,7 +61,9 @@ export default function App() {
           latestSensor={latestSensor} setLatestSensor={setLatestSensor}
           latestClassification={latestClassification} setLatestClassification={setLatestClassification}
           energyMetrics={energyMetrics} setEnergyMetrics={setEnergyMetrics}
+          energyHistory={energyHistory} setEnergyHistory={setEnergyHistory}
           dailySummary={dailySummary} setDailySummary={setDailySummary}
+          summaryHistory={summaryHistory} setSummaryHistory={setSummaryHistory}
           alerts={alerts} setAlerts={setAlerts}
           historicalSensor={historicalSensor} setHistoricalSensor={setHistoricalSensor}
           lastUpdated={lastUpdated} setLastUpdated={setLastUpdated}
@@ -74,7 +78,9 @@ function AppInner({
   latestSensor, setLatestSensor,
   latestClassification, setLatestClassification,
   energyMetrics, setEnergyMetrics,
+  energyHistory, setEnergyHistory,
   dailySummary, setDailySummary,
+  summaryHistory, setSummaryHistory,
   alerts, setAlerts,
   historicalSensor, setHistoricalSensor,
   lastUpdated, setLastUpdated,
@@ -101,12 +107,26 @@ function AppInner({
 
     const energyRef = ref(database, 'energy_metrics');
     unsubs.push(onValue(energyRef, (snap) => {
-      setEnergyMetrics(snap.val());
+      const val = snap.val();
+      setEnergyMetrics(val);
+      if (val) {
+        setEnergyHistory(prev => {
+          const next = [...prev, val];
+          return next.length > 10 ? next.slice(next.length - 10) : next;
+        });
+      }
     }));
 
     const summaryRef = ref(database, 'daily_summary');
     unsubs.push(onValue(summaryRef, (snap) => {
-      setDailySummary(snap.val());
+      const val = snap.val();
+      setDailySummary(val);
+      if (val) {
+        setSummaryHistory(prev => {
+          const next = [...prev, val];
+          return next.length > 10 ? next.slice(next.length - 10) : next;
+        });
+      }
     }));
 
     const alertsRef = ref(database, 'alerts');
@@ -143,8 +163,8 @@ function AppInner({
         <Header connected={connected} lastUpdated={lastUpdated} />
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<DashboardPage energyMetrics={energyMetrics} dailySummary={dailySummary} latestSensor={latestSensor} />} />
-            <Route path="/analytics" element={<AnalyticsPage historicalSensor={historicalSensor} dailySummary={dailySummary} energyMetrics={energyMetrics} />} />
+            <Route path="/" element={<DashboardPage energyMetrics={energyMetrics} dailySummary={dailySummary} latestSensor={latestSensor} energyHistory={energyHistory} summaryHistory={summaryHistory} />} />
+            <Route path="/analytics" element={<AnalyticsPage historicalSensor={historicalSensor} dailySummary={dailySummary} energyMetrics={energyMetrics} energyHistory={energyHistory} summaryHistory={summaryHistory} />} />
             <Route path="/vision" element={<VisionPage latestClassification={latestClassification} />} />
             <Route path="/alerts" element={<AlertsPage alerts={alerts} onAcknowledge={handleAcknowledge} />} />
           </Routes>

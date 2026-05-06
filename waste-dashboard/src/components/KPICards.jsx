@@ -56,6 +56,26 @@ const styles = {
 
 const formatValue = (val) => (val == null ? '—' : typeof val === 'number' ? val.toLocaleString() : val);
 
+function predictNextValue(history, key) {
+  if (!history || history.length < 2) return null;
+  const n = history.length;
+  let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+  history.forEach((item, i) => {
+    const x = i;
+    const y = item[key] || 0;
+    sumX += x;
+    sumY += y;
+    sumXY += x * y;
+    sumXX += x * x;
+  });
+  const denominator = n * sumXX - sumX * sumX;
+  if (denominator === 0) return history[history.length - 1][key].toFixed(1);
+  const slope = (n * sumXY - sumX * sumY) / denominator;
+  const intercept = (sumY - slope * sumX) / n;
+  const predicted = slope * n + intercept;
+  return Math.max(0, predicted).toFixed(1);
+}
+
 const KpiCard = ({ label, value, unit, color, footer, icon: Icon }) => (
   <div className="white-card" style={styles.card}>
     <div style={styles.header}>
@@ -72,8 +92,13 @@ const KpiCard = ({ label, value, unit, color, footer, icon: Icon }) => (
   </div>
 );
 
-export default function KPICards({ energyMetrics, dailySummary }) {
+export default function KPICards({ energyMetrics, dailySummary, energyHistory, summaryHistory }) {
   const { t } = useTranslation();
+
+  const getPrediction = (history, key, unit) => {
+    const pred = predictNextValue(history, key);
+    return pred ? `Pred. Next: ${pred} ${unit}` : null;
+  };
 
   return (
     <div style={styles.grid}>
@@ -82,7 +107,7 @@ export default function KPICards({ energyMetrics, dailySummary }) {
         value={energyMetrics?.biogas_m3} 
         unit="m³" 
         color="#3B82F6" 
-        footer={t('kpi.biogas.desc')}
+        footer={getPrediction(energyHistory, 'biogas_m3', 'm³') || t('kpi.biogas.desc')}
         icon={Flame} 
       />
       <KpiCard 
@@ -90,7 +115,7 @@ export default function KPICards({ energyMetrics, dailySummary }) {
         value={energyMetrics?.kwh_generated} 
         unit="kWh" 
         color="#8B5CF6" 
-        footer={t('kpi.power.desc')}
+        footer={getPrediction(energyHistory, 'kwh_generated', 'kWh') || t('kpi.power.desc')}
         icon={Zap} 
       />
       <KpiCard 
@@ -98,7 +123,7 @@ export default function KPICards({ energyMetrics, dailySummary }) {
         value={energyMetrics?.co2_offset_kg} 
         unit="kg" 
         color="#10B981" 
-        footer={t('kpi.co2.desc')}
+        footer={getPrediction(energyHistory, 'co2_offset_kg', 'kg') || t('kpi.co2.desc')}
         icon={Leaf} 
       />
       <KpiCard 
@@ -106,7 +131,7 @@ export default function KPICards({ energyMetrics, dailySummary }) {
         value={dailySummary?.waste_processed_kg} 
         unit="kg" 
         color="#3B82F6" 
-        footer={t('kpi.waste.desc')}
+        footer={getPrediction(summaryHistory, 'waste_processed_kg', 'kg') || t('kpi.waste.desc')}
         icon={Recycle} 
       />
     </div>
